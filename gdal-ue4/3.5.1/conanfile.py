@@ -16,7 +16,7 @@ class GdalUe4Conan(ConanFile):
     
     def requirements(self):
         self.requires("geos-ue4/3.6.3@adamrehn/{}".format(self.channel))
-        self.requires("proj-ue4/6.3.2@adamrehn/{}".format(self.channel))
+        self.requires("proj-ue4/8.2.1@adamrehn/{}".format(self.channel))
         self.requires("libcurl/ue4@adamrehn/{}".format(self.channel))
         self.requires("UElibPNG/ue4@adamrehn/{}".format(self.channel))
         self.requires("zlib/ue4@adamrehn/{}".format(self.channel))

@@ -2,7 +2,7 @@ from conans import ConanFile, CMake, tools
 
 class ProjUe4Conan(ConanFile):
     name = "proj-ue4"
-    version = "6.3.2"
+    version = "8.2.1"
     license = "MIT"
     url = "https://github.com/adamrehn/ue4-conan-recipes/proj-ue4"
     description = "PROJ custom build for Unreal Engine 4"
@@ -15,26 +15,34 @@ class ProjUe4Conan(ConanFile):
     
     def requirements(self):
         self.requires("sqlite3-ue4/3.39.2@adamrehn/{}".format(self.channel))
+        self.requires("LibTiff/ue4@adamrehn/{}".format(self.channel))
     
     def cmake_flags(self):
     
         from ue4util import Utility
         sqlite = self.deps_cpp_info["sqlite3-ue4"]
+        tiff = self.deps_cpp_info["LibTiff"]
         
         return [
             "-DPROJ_LIB_SUBDIR=lib",
             "-DPROJ_INCLUDE_SUBDIR=include",
-            "-DPROJ_TESTS=OFF",
+            "-DBUILD_TESTING=OFF",
+            "-DBUILD_APPS=OFF",
             "-DBUILD_CCT=OFF",
             "-DBUILD_GIE=OFF",
+            "-DBUILD_GMOCK=OFF",
             "-DBUILD_PROJ=OFF",
             "-DBUILD_PROJINFO=OFF",
-            "-DBUILD_LIBPROJ_SHARED=OFF",
+            "-DBUILD_PROJSYNC=OFF",
+            "-DBUILD_SHARED_LIBS=OFF",
             "-DBUILD_CS2CS=OFF",
             "-DBUILD_GEOD=OFF",
             "-DBUILD_NAD2BIN=OFF",
+            "-DENABLE_CURL=OFF",
             "-DSQLITE3_INCLUDE_DIR="+ sqlite.include_paths[0],
-            "-DSQLITE3_LIBRARY=" + Utility.resolve_file(sqlite.lib_paths[0], sqlite.libs[0])
+            "-DSQLITE3_LIBRARY=" + Utility.resolve_file(sqlite.lib_paths[0], sqlite.libs[0]),
+            "-DTIFF_INCLUDE_DIR=" + tiff.include_paths[0],
+            "-DTIFF_LIBRARY_RELEASE=" + Utility.resolve_file(tiff.lib_paths[0], tiff.libs[0])
         ]
     
     def source(self):
