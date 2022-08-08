@@ -20,24 +20,24 @@ class LibgeotiffUe4Conan(ConanFile):
     def requirements(self):
         self.requires("proj-ue4/6.3.2@adamrehn/{}".format(self.channel))
         self.requires("LibTiff/ue4@adamrehn/{}".format(self.channel))
-        self.requires("sqlite3-ue4/3.39.2@adamrehn/{}".format(self.channel))
-        
-    def build_requirements(self):
-        self.build_requires("LibJpegTurbo/ue4@adamrehn/{}".format(self.channel))
+        self.requires("LibJpegTurbo/ue4@adamrehn/{}".format(self.channel))
     
     def cmake_flags(self):
         from ue4util import Utility
         proj = self.deps_cpp_info["proj-ue4"]
         tiff = self.deps_cpp_info["LibTiff"]
+        jpeg = self.deps_cpp_info["LibJpegTurbo"]
 
         return [
             "-DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY",
-            "-DWITH_JPEG=OFF",
+            "-DWITH_JPEG=ON",
             "-DWITH_UTILITIES=OFF",
             "-DPROJ_INCLUDE_DIR="+ proj.include_paths[0],
             "-DPROJ_LIBRARY=" + Utility.resolve_file(proj.lib_paths[0], proj.libs[0]),
             "-DTIFF_INCLUDE_DIR=" + tiff.include_paths[0],
-            "-DTIFF_LIBRARY=" + Utility.resolve_file(tiff.lib_paths[0], tiff.libs[0])
+            "-DTIFF_LIBRARY=" + Utility.resolve_file(tiff.lib_paths[0], tiff.libs[0]),
+            "-DJPEG_INCLUDE_DIR=" + jpeg.include_paths[0],
+            "-DJPEG_LIBRARY=" + Utility.resolve_file(jpeg.lib_paths[0], jpeg.libs[0])
         ]
         
     def source(self):

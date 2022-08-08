@@ -20,12 +20,21 @@ class GdalUe4Conan(ConanFile):
         self.requires("libcurl/ue4@adamrehn/{}".format(self.channel))
         self.requires("UElibPNG/ue4@adamrehn/{}".format(self.channel))
         self.requires("zlib/ue4@adamrehn/{}".format(self.channel))
-    
+        self.requires("LibTiff/ue4@adamrehn/{}".format(self.channel))
+        self.requires("libgeotiff-ue4/1.7.1@adamrehn/{}".format(self.channel))
+        self.requires("LibJpegTurbo/ue4@adamrehn/{}".format(self.channel))
+        
     def cmake_flags(self):
         from ue4util import Utility
+        zlib = self.deps_cpp_info["zlib"]
         geos = self.deps_cpp_info["geos-ue4"]
         proj = self.deps_cpp_info["proj-ue4"]
+        tiff = self.deps_cpp_info["LibTiff"]
+        png =  self.deps_cpp_info["UElibPNG"]
+        jpeg = self.deps_cpp_info["LibJpegTurbo"]
+        geotiff = self.deps_cpp_info["libgeotiff-ue4"]
         geosConfig = Utility.resolve_file(geos.bin_paths[0], "geos-config")
+
     
         return [
             "-DBUILD_APPS=OFF",
@@ -36,11 +45,12 @@ class GdalUe4Conan(ConanFile):
             "-DBUILD_SHARED_LIBS=OFF",
             "-DBUILD_TESTING=OFF",
             "-DENABLE_PAM=OFF",
-            "-DGDAL_USE_GEOTIFF_INTERNAL=ON",
-            "-DGDAL_USE_TIFF_INTERNAL=ON",
-            "-DGDAL_USE_JPEG_INTERNAL=ON",
+            "-DGDAL_USE_PNG_INTERNAL=OFF",
+            "-DGDAL_USE_ZLIB_INTERNAL=OFF",
+            "-DGDAL_USE_JPEG_INTERNAL=OFF",
             "-DGDAL_USE_JSONC_INTERNAL=ON",
             "-DGDAL_USE_JPEG12_INTERNAL=OFF",
+            "-DGDAL_ENABLE_DRIVER_JPEG=ON",
             "-DGDAL_ENABLE_DRIVER_PCRASTER=OFF",
             "-DGDAL_ENABLE_DRIVER_MRF=OFF",
             "-DGDAL_ENABLE_DRIVER_MSGN=OFF",
@@ -73,12 +83,26 @@ class GdalUe4Conan(ConanFile):
             "-DGDAL_USE_ARMADILLO=OFF",
             "-DGDAL_USE_CRYPTOPP=OFF",
             "-DGDAL_USE_OPENSSL=OFF",
+            "-DGDAL_USE_OPENEXR=OFF",
+            "-DGDAL_USE_ZLIB=ON",
+            "-DGDAL_USE_TIFF=ON",
+            "-DGDAL_USE_GEOTIFF=ON",
             "-DOGR_ENABLE_DRIVER_SOSI=OFF",
-            "-DPNG_PNG_INCLUDE_DIR={}".format(self.deps_cpp_info["UElibPNG"].includepath),
-            "-DZLIB_INCLUDE_DIR={}".format(self.deps_cpp_info["zlib"].includepath),
+            "-DTIFF_INCLUDE_DIR=" + tiff.include_paths[0],
+            "-DTIFF_LIBRARY_RELEASE=" + Utility.resolve_file(tiff.lib_paths[0], tiff.libs[0]),
+            "-DGEOTIFF_INCLUDE_DIR=" + geotiff.include_paths[0],
+            "-DGEOTIFF_LIBRARY_RELEASE=" + Utility.resolve_file(geotiff.lib_paths[0], geotiff.libs[0]),
+            "-DPNG_PNG_INCLUDE_DIR=" + png.include_paths[0],
+            "-DPNG_LIBRARY_RELEASE=" + Utility.resolve_file(png.lib_paths[0], png.libs[0]),
+            "-DJPEG_INCLUDE_DIR=" + jpeg.include_paths[0],
+            "-DJPEG_LIBRARY_RELEASE=" + Utility.resolve_file(jpeg.lib_paths[0], jpeg.libs[0]),
+            "-DZLIB_INCLUDE_DIR=" + zlib.include_paths[0],
+            "-DZLIB_LIBRARY_RELEASE=" + Utility.resolve_file(zlib.lib_paths[0], zlib.libs[0]),
             "-DPROJ_INCLUDE_DIR="+ proj.include_paths[0],
             "-DPROJ_LIBRARY=" + Utility.resolve_file(proj.lib_paths[0], proj.libs[0]),
-            "-DGEOS_DIR={}".format(geosConfig)
+            "-DGEOS_DIR={}".format(geosConfig),
+            "-DGEOS_INCLUDE_DIR=" + geos.include_paths[0],
+            "-DGEOS_LIBRARY=" + Utility.resolve_file(geos.lib_paths[0], geos.libs[0])            
         ]
     
     def source(self):

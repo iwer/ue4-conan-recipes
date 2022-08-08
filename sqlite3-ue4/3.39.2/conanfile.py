@@ -11,8 +11,9 @@ class Sqlite3Conan(ConanFile):
     name = "sqlite3-ue4"
     version = "3.39.2"
     description = "Self-contained, serverless, in-process SQL database engine."
-    license = "Unlicense"
+    license = "Public Domain"
     homepage = "https://www.sqlite.org"
+    url = "https://github.com/adamrehn/ue4-conan-recipes/libgeotiff-ue4"
     topics = ("sqlite", "database", "sql", "serverless")
     generators: "cmake"
     requires = (
@@ -21,9 +22,11 @@ class Sqlite3Conan(ConanFile):
     )
     
     def configure_flags(self):
+    
         return []
     
     def source(self):
+    
         zip_name = "sqlite3-{}.zip".format(self.version);
         download("https://sqlite.org/2022/sqlite-autoconf-3390200.tar.gz", zip_name);
         untargz(zip_name)
